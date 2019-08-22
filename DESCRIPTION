@@ -1,0 +1,22 @@
+Package: SensAnalyzR
+Title: Sensitivity Analysis (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Nate",
+           family = "Ferraro",
+           role = c("aut", "cre"),
+           email = "ferraro.nate.k@gmail.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Creates an output of a market basket which takes into account possible percent changes to goods within the market basket. 
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    dplyr,
+    plyr,
+    tidyr,
+    purrr,
+    tibble,
+    assertthat,
+    testthat
+RoxygenNote: 6.1.1

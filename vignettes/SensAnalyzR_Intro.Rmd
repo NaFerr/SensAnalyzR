@@ -1,0 +1,115 @@
+---
+title: "SensAnalyzR_Intro"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SensAnalyzR_Intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(knitr)
+```
+
+# Overview of SensAnalyzR - How to Guide
+## A Sensitivity Analysis Tool
+
+This code was built with 6 distinct inputs to be used. Yeah, it's alot of inputs, however it allows for a greater adaptability depending on the problem.  
+
+The way the tool is designed if for market baskets within datasets.
+
+Before we get too far in here are the packages you will need.
+
+### Packages to call
+```{r }
+library(dplyr)
+library(plyr)
+library(purrr)
+library(tidyr)
+library(tibble)
+
+library(SensAnalyzR)
+```
+
+The main inputs are as follows; this example uses the mtcars dataset.
+
+### Inputs Setup
+
+```{r}
+
+#The dataset you want to analyze
+data<-mtcars
+#The good in your market basket
+goods<-c("hp","gear","wt")
+#The weights you want to give the items in your market basket
+weight<-c(6,7,8)
+#The column of the dataset you want to disaggregate by
+disagg<-"cyl"
+#The percentages you want to assess
+percent<-c(.05,.1,.15)
+#The function you want to summarize by in the disaggregation
+func<-median
+```
+I WOULD SERIOUSLY CONSIDER JUST COPYING THESE LINES INTO YOUR CODE THEN CHANGING AS NEEDED.
+
+
+### Explaination
+
+More explaination on the way these interact. 
+
+Data-your dataset, please make sure it has the column corresponding to what is in your goods and disagg arguments
+
+Goods-a group of goods you want included in your market basket, should be column names within the dataset.
+
+Weight-the appropriate weights you want to give to the goods within the market basket. (THIS NEEDS TO BE THE SAME LENGTH LIST AS THE GOODS).
+
+Disagg-should be column within the dataset, do not make this a column within your goods list.
+
+Percent-the percents you would like to be multiplied along each column. In the example c(.05,.1,.15) corresponds to 5%,10%,15%. Also the function makes all percentages negatives as well so the output for c(.05,.07) would be 5%,7%,0%,-5%,-7%.
+
+Func-the function you would like summarized by during the disaggregation. I would recommend median or mean.
+
+### Actually Running Code
+
+```{r}
+output<-sens_analysis(data, goods, weight, disagg, percent, func)
+```
+Or
+
+```{r}
+
+output_other<-(sens_analysis(mtcars, c("hp","gear","wt"), c(1,2,3), "cyl", c(.03,.08), median))
+```
+
+Produces an object output
+
+### Example Data Output
+As from the first example in the part of the R code I said you should copy
+
+
+|type|cyl|hp|gear|wt|total|
+|----|---|--|----|--|-----|
+| hp BY 0% OVER cyl|	4	|91.00|	8.0|	6.600|	105.60|
+|	hp BY 0% OVER cyl|	6	|110.00|	8.0|	9.645|	127.64|
+|	hp BY 0% OVER cyl|	8	|192.50|	6.0|	11.265|	209.76|
+|	hp BY 5% OVER cyl|	4	|95.55|	8.0|	6.600|	110.15|
+|	hp BY 5% OVER cyl|	6	|115.50|	8.0|	9.645|	133.15|
+|	hp BY 5% OVER cyl|	8 |202.12|	6.0|	11.265|	219.38|
+|	hp BY 10% OVER cyl|	4	|100.10|	8.0|	6.600|	114.70|
+|	hp BY 10% OVER cyl|	6	|121.00|	8.0|	9.645|	138.65|
+|	hp BY 10% OVER cyl|	8	|211.75|	6.0|	11.265|	229.01|
+| hp BY 15% OVER cyl|	4	|104.65|	8.0|	6.600|	119.25|
+|	hp BY 15% OVER cyl|	6	|126.50|	8.0|	9.645|	144.15|
+|	hp BY 15% OVER cyl|	8	|221.37|	6.0|	11.265|	238.63|
+|	hp BY -5% OVER cyl|	4	|86.45|	8.0|	6.600|	101.05|
+|	hp BY -5% OVER cyl|	6	|104.50|	8.0|	9.645|	122.14|
+|	hp BY -5% OVER cyl|	8	|182.88|	6.0|	11.265|	200.14|
+
+As you can see the "by 0%" is just the normal no percent option. From there all the percentages are multiplied by the column they indicate and a new total is formed.
+
+
+
